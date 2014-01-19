@@ -4,9 +4,8 @@
  * @version 1.0.0
  * Homepage: https://github.com/flesler/hashmap
  */
+define(function(require, exports, module) {
 
-;(function(exports){
-        
         function HashMap() {
                 this.clear();
         };
@@ -22,6 +21,7 @@
                 set:function(key, value) {
                         // Store original key as well (for iteration)
                         this._data[this.hash(key)] = [key, value];
+                        return value;
                 },
                 
                 has:function(key) {
@@ -106,6 +106,6 @@
                 }
         };
 
-        exports.HashMap = HashMap;
+        return HashMap;
 
-})(this.exports || this);
+});
