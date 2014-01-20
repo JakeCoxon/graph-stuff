@@ -23,36 +23,38 @@ define(function(require, exports, module) {
 
         var matchingEdges = 1, totalWeight = 0;
 
-        console.log(path);
-
+        debugger;
         for (var i = 0; i < path.length; i++) {
-            // if (edge.label == initialEdge.label)
-            //     matchingEdges ++;
-            // else
-            //     totalWeight += edge.weight * (graph.incidentVertices(edge)[1] == vertex ? 1 : -1)
+
+            var edge = path[i][0],
+                vertex = path[i][1];
+
+            if (edge.label && edge.label == initialEdge.label)
+                matchingEdges ++;
+            else
+                totalWeight += edge.weight * (graph.incidentVertices(edge)[1] == vertex ? 1 : -1);
+
         }
-        
 
-
-        return;
+        return matchingEdges / totalWeight;
 
     }
 
     function depthFirstTraversal(graph, initialVertex, initialEdge, f) {
 
-        var frontier = [[initialEdge, initialVertex]];
-        var discovered = new HashMap();
-        var parents = new HashMap();
+        var frontier = [[initialEdge, initialVertex]],
+            discovered = new HashMap(),
+            parents = new HashMap();
 
         var goal = (function() {
             while (frontier.length) {
 
                 var front = frontier.pop(),
                     edge = front[0],
-                    vertex = front[1];
+                    vertex = front[1],
+                    incidentEdges = graph.incidentEdges(vertex);
 
                 discovered.set(vertex, true);
-                var incidentEdges = graph.incidentEdges(vertex);
 
                 for (var i = 0; i < incidentEdges.length; i++) {
 
@@ -60,28 +62,30 @@ define(function(require, exports, module) {
 
                         var oppositeVertex = graph.oppositeVertex(incidentEdges[i], vertex);
 
-                        if (!discovered.has(oppositeVertex)) { 
+                        if (!discovered.has(oppositeVertex)) {
+                            
+                            var result = f(incidentEdges[i], oppositeVertex);
 
-                            parents.set(incidentEdges[i], edge);
+                            parents.set(incidentEdges[i], [edge, vertex]);
 
-                            var res = f(incidentEdges[i], oppositeVertex);
-                            if (res) return incidentEdges[i];
+                            if (result) return [incidentEdges[i], oppositeVertex];
                             frontier.push([incidentEdges[i], oppositeVertex]);
 
                         }
-
 
                     }
 
                 }
 
             }
+
+            throw new Error("No goal found");
         })();
 
         var path = [goal];
         while (goal && parents.has(goal)) {
 
-            goal = parents.get(goal);
+            goal = parents.get(goal[0]);
             path.push(goal);
 
         }

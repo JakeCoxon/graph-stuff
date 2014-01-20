@@ -33,9 +33,9 @@ define(function(require, exports, module) {
         var graph = new Graph();
         var vertexNames = graph.vertexNames = new HashMap();
         
-        function newVertex(id) { 
+        function newVertex(id) {
 
-            return graph.addVertex(vertexNames.set(id, new Vertex(id))); 
+            return graph.addVertex(vertexNames.set(id, new Vertex(id)));
 
         }
         
@@ -67,7 +67,8 @@ define(function(require, exports, module) {
     });
     var initialEdge = graph.incidentEdges(graph.vertexNames.get('a'))[0];
   
-    weightCalc(graph, initialEdge);
+    var w = weightCalc(graph, initialEdge);
+    console.log(w);
 
 
 });
